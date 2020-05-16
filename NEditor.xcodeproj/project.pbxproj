@@ -78,13 +78,8 @@
 		B9BAA63E246FB53E0013721E /* NEditor */ = {
 			isa = PBXGroup;
 			children = (
-				B9BAA63F246FB53E0013721E /* AppDelegate.swift */,
-				B9BAA641246FB53E0013721E /* ContentView.swift */,
-				B9BAA643246FB5400013721E /* Assets.xcassets */,
-				B9BAA648246FB5410013721E /* Main.storyboard */,
-				B9BAA64B246FB5410013721E /* Info.plist */,
-				B9BAA64C246FB5410013721E /* NEditor.entitlements */,
-				B9BAA645246FB5400013721E /* Preview Content */,
+				B9BAA661246FBA4D0013721E /* Sources */,
+				B9BAA660246FBA440013721E /* Resources */,
 			);
 			path = NEditor;
 			sourceTree = "<group>";
@@ -104,6 +99,27 @@
 				B9BAA657246FB5410013721E /* Info.plist */,
 			);
 			path = NEditorTests;
+			sourceTree = "<group>";
+		};
+		B9BAA660246FBA440013721E /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				B9BAA643246FB5400013721E /* Assets.xcassets */,
+				B9BAA648246FB5410013721E /* Main.storyboard */,
+				B9BAA64B246FB5410013721E /* Info.plist */,
+				B9BAA64C246FB5410013721E /* NEditor.entitlements */,
+				B9BAA645246FB5400013721E /* Preview Content */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		B9BAA661246FBA4D0013721E /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				B9BAA63F246FB53E0013721E /* AppDelegate.swift */,
+				B9BAA641246FB53E0013721E /* ContentView.swift */,
+			);
+			path = Sources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -366,7 +382,7 @@
 				DEVELOPMENT_TEAM = QQ9QE2K9VN;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = NEditor/Info.plist;
+				INFOPLIST_FILE = NEditor/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -389,7 +405,7 @@
 				DEVELOPMENT_TEAM = QQ9QE2K9VN;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
-				INFOPLIST_FILE = NEditor/Info.plist;
+				INFOPLIST_FILE = NEditor/Resources/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
