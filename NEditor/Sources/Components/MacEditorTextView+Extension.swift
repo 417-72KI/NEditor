@@ -12,6 +12,6 @@ extension MacEditorTextView {
     func editable(_ flag: Bool) -> some View {
         var view = self
         view.isEditable = flag
-        return self
+        return view
     }
 }
