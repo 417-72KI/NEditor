@@ -13,12 +13,23 @@ struct ContentView: View {
     @State private var dragOver = false
 
     var body: some View {
-        VStack {
-            GeometryReader { geometry in
+        GeometryReader { geometry in
+            VStack {
+                VStack {
+                    HStack {
+                        Text("Folder: ")
+                        TextField("", text: self.$viewModel.directoryText)
+                            .disabled(true)
+                    }
+                    HStack {
+                        Text("Filter: ")
+                        TextField("*.mp3 *.jpg etc...", text: self.$viewModel.filter)
+                        Toggle("Directory only", isOn: self.$viewModel.isDirectoryOnly)
+                    }
+                }.padding(EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16))
                 HStack {
                     MacEditorTextView(text: self.$viewModel.originalFilesText,
                                       isEditable: false)
-                        .frame(height: geometry.size.height)
                         .onDrop(of: [kUTTypeFileURL as String],
                                 isTargeted: self.$dragOver) { providers in
                                     guard providers.count == 1 else { return false }
@@ -30,7 +41,6 @@ struct ContentView: View {
                                     return true
                     }
                     MacEditorTextView(text: self.$viewModel.renamingFilesText)
-                        .frame(height: geometry.size.height)
                 }
             }
         }
@@ -40,8 +50,24 @@ struct ContentView: View {
 
 private extension ContentView {
     final class ViewModel: ObservableObject {
-        private var directory: URL?
+        private var directory: URL? {
+            didSet {
+                DispatchQueue.main.async {
+                    self.directoryText = self.directory?.path ?? ""
+                }
+            }
+        }
+        private var files: [String] = [] {
+            didSet { updateState() }
+        }
 
+        @Published var directoryText: String = ""
+        @Published var filter: String = "" {
+            didSet { updateState() }
+        }
+        @Published var isDirectoryOnly: Bool = false {
+            didSet { updateState() }
+        }
         @Published var originalFilesText: String = ""
         @Published var renamingFilesText: String = ""
     }
@@ -50,19 +76,23 @@ private extension ContentView {
 extension ContentView.ViewModel {
     func loadUrl(_ url: URL) {
         do {
-            let files = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [])
+            files = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [])
                 .map { $0.lastPathComponent }
-            DispatchQueue.main.async {
-                self.originalFilesText = files.joined(separator: "\n")
-                self.renamingFilesText = self.originalFilesText
-                self.directory = url
-            }
+            directory = url
         } catch {
             print(error)
         }
     }
-}
 
+    func updateState() {
+        let files = self.files
+
+        DispatchQueue.main.async {
+            self.originalFilesText = files.joined(separator: "\n")
+            self.renamingFilesText = self.originalFilesText
+        }
+    }
+}
 
 // MARK: - preview
 struct ContentView_Previews: PreviewProvider {
