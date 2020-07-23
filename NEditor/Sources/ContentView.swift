@@ -9,9 +9,23 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var originalFileNames: String = ""
+    @State private var files: String = ""
+    @State private var dragOver = false
+
     var body: some View {
-        Text("Hello, World!")
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        VStack {
+            GeometryReader { geometry in
+                HStack {
+                    MacEditorTextView(text: self.$originalFileNames)
+                        .editable(false)
+                        .frame(height: geometry.size.height)
+                    MacEditorTextView(text: self.$files)
+                        .frame(height: geometry.size.height)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
