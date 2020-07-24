@@ -103,9 +103,20 @@ private extension ContentView {
 }
 
 extension ContentView.ViewModel {
-    var filteredFiles: [URL] {
-        files.filterIf(!filter.isEmpty) { $0.lastPathComponent.matches(withWildcard: filter, partial: true) }
-            .filterIf(isDirectoryOnly) { [fileManager] in fileManager.isDirectory(atPath: $0.path) }
+    var beforeAndAfterRenamingFiles: [(URL, URL)] {
+        guard let directory = directory else { return [] }
+        let originalFiles = originalFilesText
+            .split(separator: "\n")
+            .map(String.init)
+            .map(directory.appendingPathComponent)
+        let renamingFiles = renamingFilesText
+            .split(separator: "\n")
+            .map { $0.trimmingCharacters(in: .whitespaces) }
+            .map(directory.appendingPathComponent)
+        precondition(originalFiles.allSatisfy { fileManager.fileExists(atPath: $0.path) })
+
+        guard originalFiles.count == renamingFiles.count else { return [] }
+        return Array(zip(originalFiles, renamingFiles))
     }
 }
 
@@ -119,20 +130,39 @@ extension ContentView.ViewModel {
         }
     }
 
+    func reload() {
+        guard let directory = directory else { return }
+        loadUrl(directory)
+    }
+
     func rename() {
-        print("before: \(originalFilesText)")
-        print("after: \(renamingFilesText)")
+        beforeAndAfterRenamingFiles.forEach {
+            if $0 == $1 {
+                print("\"\($0.path)\" not renamed.")
+                return
+            }
+            print("rename \"\($0.path)\" to \"\($1.path)\"")
+            do {
+                try fileManager.moveItem(at: $0, to: $1)
+            } catch {
+                print(error)
+            }
+        }
+        reload()
     }
 }
 
 private extension ContentView.ViewModel {
     func updateState() {
+        let filteredFiles = files.filterIf(!filter.isEmpty) { $0.lastPathComponent.matches(withWildcard: filter, partial: true) }
+                .filterIf(isDirectoryOnly) { [fileManager] in fileManager.isDirectory(atPath: $0.path) }
+
         DispatchQueue.main.async {
-            self.originalFilesText = self.filteredFiles.lazy
+            self.originalFilesText = filteredFiles.lazy
                 .map(\.lastPathComponent)
                 .joined(separator: "\n")
             self.renamingFilesText = self.originalFilesText
-            self.renameButtonEnabled = !self.filteredFiles.isEmpty
+            self.renameButtonEnabled = !filteredFiles.isEmpty
         }
     }
 }
