@@ -47,7 +47,10 @@ struct ContentView: View {
                     }
                     MacEditorTextView(text: $viewModel.renamingFilesText)
                 }
-            }
+                Toggle("Confirm before rename", isOn: $viewModel.confirmBeforeRename)
+                Button("Rename") { self.viewModel.rename() }
+                    .disabled(!viewModel.renameButtonEnabled)
+            }.padding(.bottom, 8)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
@@ -75,6 +78,9 @@ private extension ContentView {
         @Published var originalFilesText: String = ""
         @Published var renamingFilesText: String = ""
 
+        @Published var renameButtonEnabled: Bool = false
+        @Published var confirmBeforeRename: Bool = false
+
         let fileManager: FileManager
 
         init(fileManager: FileManager) {
@@ -100,12 +106,20 @@ extension ContentView.ViewModel {
         }
     }
 
+    func rename() {
+        print("before: \(originalFilesText)")
+        print("after: \(renamingFilesText)")
+    }
+}
+
+private extension ContentView.ViewModel {
     func updateState() {
         DispatchQueue.main.async {
             self.originalFilesText = self.filteredFiles.lazy
                 .map(\.lastPathComponent)
                 .joined(separator: "\n")
             self.renamingFilesText = self.originalFilesText
+            self.renameButtonEnabled = !self.filteredFiles.isEmpty
         }
     }
 }
