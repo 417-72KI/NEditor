@@ -30,21 +30,17 @@ struct ContentView: View {
                 HStack {
                     MacEditorTextView(text: $viewModel.originalFilesText,
                                       isEditable: false)
-                        .onDrop(
-                            of: [kUTTypeFileURL as String],
-                            isTargeted: $dragOver
-                        ) { providers in
-                            guard providers.count == 1 else { return false }
-                            providers[0].loadItem(
-                                forTypeIdentifier: kUTTypeFileURL as String,
-                                options: nil
-                            ) { data, _ in
-                                guard let url = (data as? Data)
-                                    .flatMap({ String(data: $0, encoding: .utf8) })
-                                    .flatMap(URL.init) else { return }
-                                self.viewModel.loadUrl(url)
-                            }
-                            return true
+                        .onDrop(of: [kUTTypeFileURL as String],
+                                isTargeted: $dragOver) { providers in
+                                    guard providers.count == 1 else { return false }
+                                    providers[0].loadItem(forTypeIdentifier: kUTTypeFileURL as String,
+                                                          options: nil) { data, _ in
+                                                            guard let url = (data as? Data)
+                                                                .flatMap({ String(data: $0, encoding: .utf8) })
+                                                                .flatMap(URL.init) else { return }
+                                                            self.viewModel.loadUrl(url)
+                                    }
+                                    return true
                         }
                     MacEditorTextView(text: $viewModel.renamingFilesText)
                 }
@@ -62,7 +58,8 @@ struct ContentView: View {
                           primaryButton: .default(Text("Do")) { self.viewModel.rename() },
                           secondaryButton: .cancel(Text("Cancel"))
                     )
-                }.disabled(!viewModel.renameButtonEnabled)
+                }
+                .disabled(!viewModel.renameButtonEnabled)
             }.padding(.bottom, 8)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
