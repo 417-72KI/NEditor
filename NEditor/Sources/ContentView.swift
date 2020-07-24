@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @ObservedObject private var viewModel = ViewModel()
+    @ObservedObject private var viewModel = ViewModel(fileManager: .default)
     @State private var dragOver = false
 
     var body: some View {
@@ -57,7 +57,7 @@ private extension ContentView {
                 }
             }
         }
-        private var files: [String] = [] {
+        private var files: [URL] = [] {
             didSet { updateState() }
         }
 
@@ -70,14 +70,19 @@ private extension ContentView {
         }
         @Published var originalFilesText: String = ""
         @Published var renamingFilesText: String = ""
+
+        let fileManager: FileManager
+
+        init(fileManager: FileManager) {
+            self.fileManager = fileManager
+        }
     }
 }
 
 extension ContentView.ViewModel {
     func loadUrl(_ url: URL) {
         do {
-            files = try FileManager.default.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [])
-                .map { $0.lastPathComponent }
+            files = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [])
             directory = url
         } catch {
             print(error)
@@ -86,9 +91,13 @@ extension ContentView.ViewModel {
 
     func updateState() {
         let files = self.files
+            .filterIf(!filter.isEmpty) { $0.lastPathComponent.matches(withWildcard: filter, partial: true) }
+            .filterIf(isDirectoryOnly) { [fileManager] in fileManager.isDirectory(atPath: $0.path) }
 
         DispatchQueue.main.async {
-            self.originalFilesText = files.joined(separator: "\n")
+            self.originalFilesText = files.lazy
+                .map(\.lastPathComponent)
+                .joined(separator: "\n")
             self.renamingFilesText = self.originalFilesText
         }
     }
