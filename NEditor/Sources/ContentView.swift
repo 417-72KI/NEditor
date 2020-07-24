@@ -38,14 +38,14 @@ struct ContentView: View {
                             providers[0].loadItem(
                                 forTypeIdentifier: kUTTypeFileURL as String,
                                 options: nil
-                            ) { data, error in
+                            ) { data, _ in
                                 guard let url = (data as? Data)
                                     .flatMap({ String(data: $0, encoding: .utf8) })
                                     .flatMap(URL.init) else { return }
                                 self.viewModel.loadUrl(url)
                             }
                             return true
-                    }
+                        }
                     MacEditorTextView(text: $viewModel.renamingFilesText)
                 }
                 Toggle("Confirm before rename", isOn: $viewModel.confirmBeforeRename)

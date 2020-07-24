@@ -10,7 +10,7 @@ import Foundation
 
 extension Collection {
     func filterIf(_ condition: @autoclosure () -> Bool, _ isIncluded: (Element) throws -> Bool) rethrows -> [Element] {
-        return try lazy.filterIf(condition(), isIncluded)
+        try lazy.filterIf(condition(), isIncluded)
     }
 }
 
