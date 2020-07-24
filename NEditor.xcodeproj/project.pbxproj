@@ -72,8 +72,6 @@
 		B92608E624C9E4AF003A53E3 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				B92608E724C9E4C6003A53E3 /* MacEditorTextView.swift */,
-				B92608E924C9F04A003A53E3 /* MacEditorTextView+Extension.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -89,6 +87,7 @@
 		B92608EE24CAA8D5003A53E3 /* Extension */ = {
 			isa = PBXGroup;
 			children = (
+				B92608E924C9F04A003A53E3 /* MacEditorTextView+Extension.swift */,
 				B92608EF24CAA8DD003A53E3 /* Collection.swift */,
 				B92608F124CB155E003A53E3 /* FileManager.swift */,
 				B92608F324CB1987003A53E3 /* String.swift */,
@@ -102,6 +101,14 @@
 				B92608F824CB1A43003A53E3 /* StringTests.swift */,
 			);
 			path = Extension;
+			sourceTree = "<group>";
+		};
+		B92608FB24CB4AE7003A53E3 /* Libs */ = {
+			isa = PBXGroup;
+			children = (
+				B92608E724C9E4C6003A53E3 /* MacEditorTextView.swift */,
+			);
+			path = Libs;
 			sourceTree = "<group>";
 		};
 		B9BAA633246FB53E0013721E = {
@@ -127,6 +134,7 @@
 			children = (
 				B9BAA661246FBA4D0013721E /* Sources */,
 				B9BAA660246FBA440013721E /* Resources */,
+				B92608FB24CB4AE7003A53E3 /* Libs */,
 			);
 			path = NEditor;
 			sourceTree = "<group>";
@@ -179,6 +187,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B9BAA65A246FB5410013721E /* Build configuration list for PBXNativeTarget "NEditor" */;
 			buildPhases = (
+				B92608FA24CB498F003A53E3 /* SwiftLint */,
 				B9BAA638246FB53E0013721E /* Sources */,
 				B9BAA639246FB53E0013721E /* Frameworks */,
 				B9BAA63A246FB53E0013721E /* Resources */,
@@ -267,6 +276,27 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		B92608FA24CB498F003A53E3 /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mint run swiftlint\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		B9BAA638246FB53E0013721E /* Sources */ = {
