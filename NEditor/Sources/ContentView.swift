@@ -80,6 +80,13 @@ private extension ContentView {
 }
 
 extension ContentView.ViewModel {
+    var filteredFiles: [URL] {
+        files.filterIf(!filter.isEmpty) { $0.lastPathComponent.matches(withWildcard: filter, partial: true) }
+            .filterIf(isDirectoryOnly) { [fileManager] in fileManager.isDirectory(atPath: $0.path) }
+    }
+}
+
+extension ContentView.ViewModel {
     func loadUrl(_ url: URL) {
         do {
             files = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [])
@@ -90,12 +97,8 @@ extension ContentView.ViewModel {
     }
 
     func updateState() {
-        let files = self.files
-            .filterIf(!filter.isEmpty) { $0.lastPathComponent.matches(withWildcard: filter, partial: true) }
-            .filterIf(isDirectoryOnly) { [fileManager] in fileManager.isDirectory(atPath: $0.path) }
-
         DispatchQueue.main.async {
-            self.originalFilesText = files.lazy
+            self.originalFilesText = self.filteredFiles.lazy
                 .map(\.lastPathComponent)
                 .joined(separator: "\n")
             self.renamingFilesText = self.originalFilesText
