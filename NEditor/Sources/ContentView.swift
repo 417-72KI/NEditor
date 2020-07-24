@@ -11,6 +11,7 @@ import SwiftUI
 struct ContentView: View {
     @ObservedObject private var viewModel = ViewModel(fileManager: .default)
     @State private var dragOver = false
+    @State private var isDialogShowing = false
 
     var body: some View {
             VStack {
@@ -48,8 +49,20 @@ struct ContentView: View {
                     MacEditorTextView(text: $viewModel.renamingFilesText)
                 }
                 Toggle("Confirm before rename", isOn: $viewModel.confirmBeforeRename)
-                Button("Rename") { self.viewModel.rename() }
-                    .disabled(!viewModel.renameButtonEnabled)
+                Button("Rename") {
+                    if self.viewModel.confirmBeforeRename {
+                        self.isDialogShowing = true
+                    } else {
+                        self.viewModel.rename()
+                    }
+                }
+                .alert(isPresented: $isDialogShowing) {
+                    Alert(title: Text("Confirm"),
+                          message: Text("Are you sure?"),
+                          primaryButton: .default(Text("Do")) { self.viewModel.rename() },
+                          secondaryButton: .cancel(Text("Cancel"))
+                    )
+                }.disabled(!viewModel.renameButtonEnabled)
             }.padding(.bottom, 8)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
