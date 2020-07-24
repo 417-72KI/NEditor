@@ -13,38 +13,42 @@ struct ContentView: View {
     @State private var dragOver = false
 
     var body: some View {
-        GeometryReader { geometry in
             VStack {
                 VStack {
                     HStack {
                         Text("Folder: ")
-                        TextField("", text: self.$viewModel.directoryText)
+                        TextField("", text: $viewModel.directoryText)
                             .disabled(true)
                     }
                     HStack {
                         Text("Filter: ")
-                        TextField("*.mp3 *.jpg etc...", text: self.$viewModel.filter)
-                        Toggle("Directory only", isOn: self.$viewModel.isDirectoryOnly)
+                        TextField("*.mp3 *.jpg etc...", text: $viewModel.filter)
+                        Toggle("Directory only", isOn: $viewModel.isDirectoryOnly)
                     }
                 }.padding(EdgeInsets(top: 8, leading: 16, bottom: 0, trailing: 16))
                 HStack {
-                    MacEditorTextView(text: self.$viewModel.originalFilesText,
+                    MacEditorTextView(text: $viewModel.originalFilesText,
                                       isEditable: false)
-                        .onDrop(of: [kUTTypeFileURL as String],
-                                isTargeted: self.$dragOver) { providers in
-                                    guard providers.count == 1 else { return false }
-                                    providers[0].loadItem(forTypeIdentifier: kUTTypeFileURL as String, options: nil) { (data, error) in
-                                        guard let url = (data as? Data).flatMap({ String(data: $0, encoding: .utf8) })
-                                            .flatMap(URL.init) else { return }
-                                        self.viewModel.loadUrl(url)
-                                    }
-                                    return true
+                        .onDrop(
+                            of: [kUTTypeFileURL as String],
+                            isTargeted: $dragOver
+                        ) { providers in
+                            guard providers.count == 1 else { return false }
+                            providers[0].loadItem(
+                                forTypeIdentifier: kUTTypeFileURL as String,
+                                options: nil
+                            ) { data, error in
+                                guard let url = (data as? Data)
+                                    .flatMap({ String(data: $0, encoding: .utf8) })
+                                    .flatMap(URL.init) else { return }
+                                self.viewModel.loadUrl(url)
+                            }
+                            return true
                     }
-                    MacEditorTextView(text: self.$viewModel.renamingFilesText)
+                    MacEditorTextView(text: $viewModel.renamingFilesText)
                 }
             }
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
 }
 
