@@ -8,15 +8,16 @@
 
 import Foundation
 
-extension Collection {
+extension Sequence {
     func filterIf(_ condition: @autoclosure () -> Bool, _ isIncluded: (Element) throws -> Bool) rethrows -> [Element] {
-        try lazy.filterIf(condition(), isIncluded)
+        guard condition() else { return [Element](self) }
+        return try filter(isIncluded)
     }
 }
 
 extension LazySequence {
-    func filterIf(_ condition: @autoclosure () -> Bool, _ isIncluded: (Element) throws -> Bool) rethrows -> [Element] {
-        guard condition() else { return [Element](self) }
-        return try filter(isIncluded)
+    func filterIf(_ condition: @autoclosure () -> Bool, _ isIncluded: @escaping (Element) -> Bool) -> LazyFilterSequence<Base> {
+        guard condition() else { return filter { _ in true } }
+        return filter(isIncluded)
     }
 }
