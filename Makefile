@@ -1,18 +1,23 @@
 .SILENT: run
 
+PRODUCT_NAME := NEditor
+
 init:
 	@mint bootstrap
-	$(MAKE) xcodeproj
+	$(MAKE) xcproj
 
-xcodeproj:
-	@mint run xcodegen xcodegen generate --use-cache
-	@open NEditor.xcodeproj
+xcproj:
+	@mint run xcodegen xcodegen generate
+	@open ${PRODUCT_NAME}.xcodeproj
 
-xcodeproj-quiet:
+xcproj-quiet:
 	@mint run xcodegen xcodegen generate --use-cache --quiet
 
-build: xcodeproj-quiet
+build: xcproj-quiet
 	@xcrun xcodebuild -configuration Debug build | xcpretty
 
+test: xcproj-quiet
+	@xcrun xcodebuild -scheme ${PRODUCT_NAME} test | xcpretty
+
 run: build
-	@open build/Debug/NEditor.app
+	@open build/Debug/${PRODUCT_NAME}.app
