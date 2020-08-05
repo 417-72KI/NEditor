@@ -17,6 +17,10 @@ schemes:
       config: Debug
     test:
       config: Debug
+      gatherCoverageData: true
+      targets: 
+        - name: NEditorTests
+          parallelizable: true
     profile: 
       config: Release
     analyze:
@@ -34,12 +38,13 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: jp.room417.NEditor
         INFOPLIST_FILE: NEditor/Resources/Info.plist
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_ASSET_PATHS: "\"NEditor/Resources/Preview Content\""
+        ENABLE_PREVIEWS: true
       config:
         debug:
-          CODE_SIGN_STYLE: Automatic
-          ENABLE_PREVIEWS: true
-          DEVELOPMENT_ASSET_PATHS: NEditor/Resources/Preview Content
-    entitlements:
+          CODE_SIGN_IDENTITY: Apple Development
+      entitlements:
       path: NEditor/Resources/NEditor.entitlements
       properties: 
         com.apple.security.app-sandbox: true
