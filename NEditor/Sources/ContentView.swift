@@ -103,11 +103,11 @@ extension ContentView.ViewModel {
     var beforeAndAfterRenamingFiles: [(URL, URL)] {
         guard let directory = directory else { return [] }
         let originalFiles = originalFilesText
-            .split(separator: "\n")
+            .split(separator: "\n" as Character)
             .map(String.init)
             .map(directory.appendingPathComponent)
         let renamingFiles = renamingFilesText
-            .split(separator: "\n")
+            .split(separator: "\n" as Character)
             .map { $0.trimmingCharacters(in: .whitespaces) }
             .map(directory.appendingPathComponent)
         precondition(originalFiles.allSatisfy { fileManager.fileExists(atPath: $0.path) })
