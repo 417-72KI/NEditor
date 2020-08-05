@@ -121,6 +121,7 @@ extension ContentView.ViewModel {
     func loadUrl(_ url: URL) {
         do {
             files = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil, options: [])
+                .sorted { $0.lastPathComponent < $1.lastPathComponent }
             directory = url
         } catch {
             print(error)
