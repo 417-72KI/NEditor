@@ -7,6 +7,22 @@ settings:
     MACOSX_DEPLOYMENT_TARGET: 10.15
     SWIFT_VERSION: 5.0
     DEVELOPMENT_TEAM: QQ9QE2K9VN
+schemes:
+  NEditor:
+    build:
+      targets:
+        NEditor: all
+        NEditorTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+    profile: 
+      config: Release
+    analyze:
+      config: Debug
+    archive: 
+      config: Release
 packages: {}
 targets:
   NEditor:
