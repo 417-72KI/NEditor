@@ -38,7 +38,7 @@ struct ContentView: View {
                                                             guard let url = (data as? Data)
                                                                 .flatMap({ String(data: $0, encoding: .utf8) })
                                                                 .flatMap(URL.init) else { return }
-                                                            self.viewModel.loadUrl(url)
+                                                            viewModel.loadUrl(url)
                                     }
                                     return true
                         }
@@ -46,10 +46,10 @@ struct ContentView: View {
                 }
                 Toggle("Confirm before rename", isOn: $viewModel.confirmBeforeRename)
                 Button("Rename") {
-                    if self.viewModel.confirmBeforeRename {
-                        self.isDialogShowing = true
+                    if viewModel.confirmBeforeRename {
+                        isDialogShowing = true
                     } else {
-                        self.viewModel.rename()
+                        viewModel.rename()
                     }
                 }
                 .alert(isPresented: $isDialogShowing) {
@@ -69,8 +69,8 @@ private extension ContentView {
     final class ViewModel: ObservableObject {
         private var directory: URL? {
             didSet {
-                DispatchQueue.main.async {
-                    self.directoryText = self.directory?.path ?? ""
+                DispatchQueue.main.async { [self] in
+                    directoryText = directory?.path ?? ""
                 }
             }
         }
@@ -155,12 +155,12 @@ private extension ContentView.ViewModel {
         let filteredFiles = files.filterIf(!filter.isEmpty) { $0.lastPathComponent.matches(withWildcard: filter, partial: true) }
                 .filterIf(isDirectoryOnly) { [fileManager] in fileManager.isDirectory(atPath: $0.path) }
 
-        DispatchQueue.main.async {
-            self.originalFilesText = filteredFiles.lazy
+        DispatchQueue.main.async { [self] in
+            originalFilesText = filteredFiles.lazy
                 .map(\.lastPathComponent)
                 .joined(separator: "\n")
-            self.renamingFilesText = self.originalFilesText
-            self.renameButtonEnabled = !filteredFiles.isEmpty
+            renamingFilesText = originalFilesText
+            renameButtonEnabled = !filteredFiles.isEmpty
         }
     }
 }
