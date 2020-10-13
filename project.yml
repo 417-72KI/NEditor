@@ -1,0 +1,68 @@
+name: NEditor
+configs:
+  Debug: debug
+  Release: release
+settings:
+  base:
+    MACOSX_DEPLOYMENT_TARGET: 10.15
+    SWIFT_VERSION: 5.0
+    DEVELOPMENT_TEAM: QQ9QE2K9VN
+schemes:
+  NEditor:
+    build:
+      targets:
+        NEditor: all
+        NEditorTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      gatherCoverageData: true
+      targets: 
+        - name: NEditorTests
+          parallelizable: true
+    profile: 
+      config: Release
+    analyze:
+      config: Debug
+    archive: 
+      config: Release
+packages: {}
+targets:
+  NEditor:
+    type: application
+    platform: macOS
+    sources: 
+      - NEditor
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: jp.room417.NEditor
+        INFOPLIST_FILE: NEditor/Resources/Info.plist
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_ASSET_PATHS: "\"NEditor/Resources/Preview Content\""
+        ENABLE_PREVIEWS: true
+      config:
+        debug:
+          CODE_SIGN_IDENTITY: Apple Development
+      entitlements:
+      path: NEditor/Resources/NEditor.entitlements
+      properties: 
+        com.apple.security.app-sandbox: true
+        com.apple.security.files.user-selected.read-only: true
+    dependencies: []
+    preBuildScripts:
+      - name: SwiftLint
+        script: |
+          mint run swiftlint
+    testTargets:
+      - NEditorTests
+  NEditorTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources: NEditorTests
+    settings:
+      CODE_SIGN_STYLE: Automatic
+      TEST_HOST: $(BUILT_PRODUCTS_DIR)/NEditor.app/Contents/MacOS/NEditor
+    dependencies:
+      - target: NEditor
+  
