@@ -54,8 +54,12 @@ struct ContentView: View {
                 }
                 .alert(isPresented: $isDialogShowing) {
                     Alert(title: Text("Confirm"),
-                          message: Text("Are you sure?"),
-                          primaryButton: .default(Text("Do")) { self.viewModel.rename() },
+                          message: Text(
+                            viewModel.beforeAndAfterRenamingFiles
+                                .map { "\"\($0.lastPathComponent)\" → \"\($1.lastPathComponent)\"" }
+                                .joined(separator: "\n")
+                          ),
+                          primaryButton: .default(Text("Do")) { viewModel.rename() },
                           secondaryButton: .cancel(Text("Cancel"))
                     )
                 }
