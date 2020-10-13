@@ -8,7 +8,7 @@ init:
 
 xcproj:
 	@mint run xcodegen xcodegen generate
-	@open ${PRODUCT_NAME}.xcodeproj
+	@xed .
 
 xcproj-quiet:
 	@mint run xcodegen xcodegen generate --use-cache --quiet
